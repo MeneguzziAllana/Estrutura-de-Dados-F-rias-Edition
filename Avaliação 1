@@ -1,0 +1,77 @@
+class Node:  
+  def __init__(self, jogador, tipo_evento, tempo_de_jogo):
+    self.jogador = jogador  
+    self.tipo_evento = tipo_evento 
+    self.tempo_de_jogo = tempo_de_jogo 
+    self.proximo = None 
+
+class Eventos:
+  def __init__(self):
+    self.primeiro = None
+    self.ultimo = None 
+    self.fila_substituicoes = []
+
+  def adicionar_evento(self, jogador, tipo_evento, tempo_de_jogo):
+    novo_evento = Node(jogador, tipo_evento, tempo_de_jogo)
+    if self.primeiro is None: 
+      self.primeiro = novo_evento
+    else: 
+      self.ultimo.proximo = novo_evento
+    self.ultimo = novo_evento 
+
+  def imprimir_eventos(self):
+    atual = self.primeiro
+    while atual is not None:
+      print(f"{atual.jogador}, {atual.tipo_evento}, Tempo de Jogo: {atual.tempo_de_jogo} min")
+      atual = atual.proximo 
+
+  def solicitar_substituicao(self, jogador_entra, jogador_sai):
+    self.fila_substituicoes.append((jogador_entra, jogador_sai))  
+
+  def processar_substituicoes(self):
+    for entrada, saida in self.fila_substituicoes:
+      print(f"\nSubstituição: {saida} sai, {entrada} entra") 
+    self.fila_substituicoes = [] 
+
+class PilhaEventos:
+  def __init__(self): 
+    self.topo = None  
+
+  def empilhar(self, jogador, tipo_evento, tempo_de_jogo):
+    novo_evento = Node(jogador, tipo_evento, tempo_de_jogo) 
+    novo_evento.proximo = self.topo 
+    self.topo = novo_evento  
+
+  def desempilhar(self): 
+    if self.topo is not None:
+      evento_desfeito = self.topo 
+      self.topo = self.topo.proximo 
+      return evento_desfeito 
+    else:
+      return None 
+
+eventos = Eventos() 
+pilha_eventos = PilhaEventos() 
+
+eventos.adicionar_evento("Jogador 1", "Cesta de 3 pontos", 10)  
+pilha_eventos.empilhar("Jogador 1", "Cesta de 3 pontos", 10)  
+
+eventos.adicionar_evento("Jogador 2", "Falta", 15)  
+pilha_eventos.empilhar("Jogador 2", "Falta", 15) 
+
+eventos.adicionar_evento("Jogador 1", "Assistência", 20) 
+pilha_eventos.empilhar("Jogador 1", "Assistência", 20) 
+
+evento_desfeito = pilha_eventos.desempilhar() 
+
+eventos.imprimir_eventos() 
+
+if evento_desfeito:
+  print("\nEvento Desfeito:")
+  print(f"{evento_desfeito.jogador}, {evento_desfeito.tipo_evento}, Tempo de Jogo: {evento_desfeito.tempo_de_jogo} min")
+else:
+  print("\nNenhum evento desfeito.")
+
+eventos.solicitar_substituicao("Jogador 4", "Jogador 1")  
+eventos.solicitar_substituicao("Jogador 6", "Jogador 3") 
+eventos.processar_substituicoes()
