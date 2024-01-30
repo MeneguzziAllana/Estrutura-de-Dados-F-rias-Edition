@@ -1,0 +1,61 @@
+TAMANHO_VETOR = 10
+
+class HashLista:
+  def __init__(self):
+    self.chave = None
+    self.prox = None
+
+def FuncaoHashing(num):
+  return num % TAMANHO_VETOR
+
+def InserirNaHash(Tabela, pos, num):
+  novo_registro = HashLista()
+  novo_registro.chave = num
+  novo_registro.prox = None
+  if Tabela[pos] is None:
+    Tabela[pos] = novo_registro
+  else:
+    atual = Tabela[pos]
+    while atual.prox is not None:
+      atual = atual.prox
+    atual.prox = novo_registro
+
+def RemoverDaHash(Tabela, num):
+  pos = FuncaoHashing(num)
+  if Tabela[pos] is None:
+    print("\n--- Chave não encontrada na tabela hash! ---")
+    return
+  elif Tabela[pos].chave == num:
+    Tabela[pos] = Tabela[pos].prox
+    return
+  anterior = None
+  atual = Tabela[pos]
+  while atual is not None and atual.chave != num:
+    anterior = atual
+    atual = atual.prox
+  if atual is None:
+    print("\n--- Chave não encontrada na tabela hash! ---")
+  else:
+    anterior.prox = atual.prox
+
+def HashMenuLista():
+  Tabela = [None] * TAMANHO_VETOR
+
+  for i in range(TAMANHO_VETOR):
+    Tabela[i] = None
+
+  while True:
+    op = int(input("\nEscolha uma operação:\n(1) Para inserir \n(2) Para remover\n"))
+    if op == 1:
+      num = int(input("\nDigite o número a ser inserido: \n"))
+      pos = FuncaoHashing(num)
+      InserirNaHash(Tabela, pos, num)
+    elif op == 2:
+      num = int(input("\nDigite o número a ser removido: \n"))
+      RemoverDaHash(Tabela, num)
+    else:
+      break
+
+  return Tabela
+  
+HashMenuLista()
